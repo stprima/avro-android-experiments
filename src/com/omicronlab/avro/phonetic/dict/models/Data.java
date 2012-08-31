@@ -34,7 +34,7 @@ public class Data {
 	private List<Pattern> patterns;
 	private String vowel = "";
 	private String consonant = "";
-	private String casesensitive = "";
+	private String ignore = "";
 	
 	public Data() {
 		this.patterns = new ArrayList<Pattern>();
@@ -64,12 +64,12 @@ public class Data {
 		this.consonant = consonant;
 	}
 
-	public String getCasesensitive() {
-		return casesensitive;
+	public String getIgnore() {
+		return ignore;
 	}
 
-	public void setCasesensitive(String casesensitive) {
-		this.casesensitive = casesensitive;
+	public void setIgnore(String casesensitive) {
+		this.ignore = casesensitive;
 	}
 	
 }

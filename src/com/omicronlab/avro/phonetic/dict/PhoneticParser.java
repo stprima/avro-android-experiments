@@ -43,7 +43,7 @@ public class PhoneticParser {
 	private static List<Pattern> patterns;
 	private static String vowel = "";
 	private static String consonant = "";
-	private static String casesensitive = "";
+	private static String ignore = "";
 	private boolean initialized = false;
 	
 	// Prevent initialization
@@ -80,7 +80,7 @@ public class PhoneticParser {
 		
 		vowel = data.getVowel();
 		consonant = data.getConsonant();
-		casesensitive = data.getCasesensitive();
+		ignore = data.getIgnore();
 		initialized = true;
 	}
 	
@@ -98,10 +98,7 @@ public class PhoneticParser {
 		
 		String fixed = "";
 		for(char c: input.toCharArray()) {
-			if(this.isCaseSensitive(c)) {
-				fixed += c;
-			}
-			else {
+			if(!this.isIgnore(c)) {
 				fixed += Character.toLowerCase(c);
 			}
 		}
@@ -191,7 +188,7 @@ public class PhoneticParser {
 						}
 						
 						if(replace) {
-							output += rule.getReplace();
+							output += rule.getReplace() + "(্[যবম])?(্?)([ঃঁ]?)";
 							cur = end - 1;
 							matched = true;
 							break;
@@ -202,7 +199,7 @@ public class PhoneticParser {
 					if(matched == true) break;
 					
 					// Default
-					output += pattern.getReplace();
+					output += pattern.getReplace() + "(্[যবম])?(্?)([ঃঁ]?)";
 					cur = end - 1;
 					matched = true;
 					break;
@@ -233,8 +230,8 @@ public class PhoneticParser {
 		return ((start >= 0 && end < heystack.length() && heystack.substring(start, end).equals(needle)) ^ not);
 	}
 	
-	private boolean isCaseSensitive(char c) {
-		return (casesensitive.indexOf(Character.toLowerCase(c)) >= 0);
+	private boolean isIgnore(char c) {
+		return (ignore.indexOf(Character.toLowerCase(c)) >= 0);
 	}
 	
 }
