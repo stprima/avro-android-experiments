@@ -84,7 +84,7 @@ public class PhoneticParser {
 		initialized = true;
 	}
 	
-	public String parse(String input) {
+	public PhoneticResult parse(String input) {
 		
 		if(initialized == false) {
 			try {
@@ -103,7 +103,10 @@ public class PhoneticParser {
 			}
 		}
 		
-		String output = "";
+		//String output = "";
+		PhoneticResult output = new PhoneticResult();
+		ArrayList<String> temPatterns = new ArrayList<String>();
+		
 		for(int cur = 0; cur < fixed.length(); ++cur) {
 			int start = cur, end = cur + 1, prev = start - 1;
 			boolean matched = false;
@@ -188,7 +191,8 @@ public class PhoneticParser {
 						}
 						
 						if(replace) {
-							output += rule.getReplace() + "(্[যবম])?(্?)([ঃঁ]?)";
+							output.regex += rule.getReplace() + "(্[যবম])?(্?)([ঃঁ]?)";
+							temPatterns.add(rule.getReplace());
 							cur = end - 1;
 							matched = true;
 							break;
@@ -199,7 +203,8 @@ public class PhoneticParser {
 					if(matched == true) break;
 					
 					// Default
-					output += pattern.getReplace() + "(্[যবম])?(্?)([ঃঁ]?)";
+					output.regex += pattern.getReplace() + "(্[যবম])?(্?)([ঃঁ]?)";
+					temPatterns.add(pattern.getReplace());
 					cur = end - 1;
 					matched = true;
 					break;
@@ -207,10 +212,16 @@ public class PhoneticParser {
 			}
 			
 			if(!matched) {
-				output += fixed.charAt(cur);
+				output.regex += fixed.charAt(cur);
+				temPatterns.add(fixed.charAt(cur) + "");
 			}
 			// System.out.printf("cur: %s, start: %s, end: %s, prev: %s\n", cur, start, end, prev);
 		}
+		
+		if (temPatterns.size()>0){
+			output.regexScope = "^" + temPatterns.get(0) + ".*" +  temPatterns.get(temPatterns.size() - 1) + "(্[যবম])?(্?)([ঃঁ]?)" + "$";
+		}
+		
 		return output;
 	}
 	

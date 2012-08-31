@@ -32,12 +32,10 @@ public class MainActivity extends Activity {
 		butGc = (Button) findViewById(R.id.button2);
 		editText1 = (EditText) findViewById(R.id.editText1);
 
-		calculateMemory();
-
 		butTest.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Log.i("Test", PhoneticParser.getInstance().parse("test"));
+				Log.i("Test", PhoneticParser.getInstance().parse("test").regex);
 			}
 		});
 
@@ -55,6 +53,8 @@ public class MainActivity extends Activity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		calculateMemory();
 	}
 
 	private void calculateMemory() {
