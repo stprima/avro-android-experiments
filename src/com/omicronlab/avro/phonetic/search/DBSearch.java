@@ -7,6 +7,8 @@ import org.garret.perst.Key;
 import org.garret.perst.Storage;
 import org.garret.perst.StorageFactory;
 
+import android.util.Log;
+
 import com.omicronlab.avro.app.AvroTest;
 import com.omicronlab.avro.phonetic.dict.PhoneticJsonLoader;
 import com.omicronlab.avro.phonetic.dict.PhoneticParser;
@@ -23,15 +25,27 @@ public class DBSearch {
 	private AvroRootClass root = null;
 
 	public ArrayList<String> search(String engT) {
+		long startTime, endTime;
+		
+		startTime = System.currentTimeMillis();
 		PhoneticResult pr = regexParser.parse(engT);
+		endTime = System.currentTimeMillis();
+		Log.i("Parser", (endTime-startTime) + "ms");
+		
 		ArrayList<String> words = null;
 
+		startTime = System.currentTimeMillis();
 		PatternPersistentClass objp = root.strKeyIndex.get(new Key(pr.regexScope));
 		if (objp != null) {
 			words = populateWords(objp.words);
 		}
+		endTime = System.currentTimeMillis();
+		Log.i("Perst", (endTime-startTime) + "ms");
 
+		startTime = System.currentTimeMillis();
 		ArrayList<String> result = searchRegexInWords(words, pr.regex);
+		endTime = System.currentTimeMillis();
+		Log.i("Regex", (endTime-startTime) + "ms");
 		return result;
 	}
 
