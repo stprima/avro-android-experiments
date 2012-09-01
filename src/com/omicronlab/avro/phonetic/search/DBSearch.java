@@ -1,7 +1,6 @@
 package com.omicronlab.avro.phonetic.search;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.garret.perst.Key;
