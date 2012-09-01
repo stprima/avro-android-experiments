@@ -4,7 +4,7 @@ import org.garret.perst.Persistent;
 
 public class PatternPersistentClass extends Persistent {
     public String strKey;    // integer key
-    public Integer[] words;
+    public String[] words;
     
     public PatternPersistentClass(){
     	

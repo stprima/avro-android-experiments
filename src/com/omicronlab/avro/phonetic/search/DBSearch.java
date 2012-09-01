@@ -15,7 +15,6 @@ import com.omicronlab.avro.phonetic.dict.PhoneticParser;
 import com.omicronlab.avro.phonetic.dict.PhoneticResult;
 import com.omicronlab.avro.phonetic.perst.models.AvroRootClass;
 import com.omicronlab.avro.phonetic.perst.models.PatternPersistentClass;
-import com.omicronlab.avro.phonetic.perst.models.WordPersistentClass;
 
 public class DBSearch {
 
@@ -32,12 +31,11 @@ public class DBSearch {
 		endTime = System.currentTimeMillis();
 		Log.i("Parser", (endTime - startTime) + "ms");
 
-		ArrayList<String> words = null;
-
+		String[] words = null;
 		startTime = System.currentTimeMillis();
 		PatternPersistentClass objp = root.strKeyIndex.get(new Key(pr.regexScope));
 		if (objp != null) {
-			words = populateWords(objp.words);
+			words = objp.words;
 		}
 		endTime = System.currentTimeMillis();
 		Log.i("Perst", (endTime - startTime) + "ms");
@@ -49,7 +47,7 @@ public class DBSearch {
 		return result;
 	}
 
-	private ArrayList<String> searchRegexInWords(ArrayList<String> words, String regex) {
+	private ArrayList<String> searchRegexInWords(String[] words, String regex) {
 		ArrayList<String> retWords = new ArrayList<String>();
 
 		if (words != null) {
@@ -61,19 +59,6 @@ public class DBSearch {
 			}
 		}
 		return retWords;
-	}
-
-	private ArrayList<String> populateWords(Integer[] ids) {
-		ArrayList<String> words = new ArrayList<String>();
-
-		if (ids.length > 0) {
-			for (int i = 0; i < ids.length; i++) {
-				WordPersistentClass objw = root.intKeyIndex.get(new Key(ids[i].intValue()));
-				words.add(objw.word);
-			}
-		}
-
-		return words;
 	}
 
 	private DBSearch() {
@@ -92,7 +77,7 @@ public class DBSearch {
 		int pagePoolSize = 20 * 1024 * 1024;
 
 		db = StorageFactory.getInstance().createStorage();
-		String dbpath = AvroTest.getAppContext().getFileStreamPath("test.dbs").getAbsolutePath();
+		String dbpath = AvroTest.getAppContext().getFileStreamPath(AvroTest.DB_NAME).getAbsolutePath();
 		db.open(dbpath, pagePoolSize);
 
 		root = (AvroRootClass) db.getRoot(); // get storage root

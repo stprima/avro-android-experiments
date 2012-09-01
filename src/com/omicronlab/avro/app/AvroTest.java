@@ -16,6 +16,8 @@ public class AvroTest extends Application  {
 	private static Context context;
 	private static AvroTest singleton;
 	
+	public static final String DB_NAME = "test2.dbs";
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -30,7 +32,11 @@ public class AvroTest extends Application  {
 	}
 	
 	private void initializeApplication() {
-		File file = getFileStreamPath("test.dbs");
+		//Delete previous database
+		File file_prev = getFileStreamPath("test.dbs");
+		file_prev.delete();
+		
+		File file = getFileStreamPath(DB_NAME);
 		if (!file.exists()) {
 			copyAssets();
 		}
@@ -46,9 +52,9 @@ public class AvroTest extends Application  {
 		InputStream in = null;
 		OutputStream out = null;
 		try {
-			in = assetManager.open("test.dbs");
-			openFileOutput("test.dbs", 0).close();
-			out = new FileOutputStream(getFileStreamPath("test.dbs").getAbsolutePath());
+			in = assetManager.open(DB_NAME);
+			openFileOutput(DB_NAME, 0).close();
+			out = new FileOutputStream(getFileStreamPath(DB_NAME).getAbsolutePath());
 			copyFile(in, out);
 			in.close();
 			in = null;
