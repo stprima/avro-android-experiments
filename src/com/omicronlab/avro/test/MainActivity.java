@@ -1,25 +1,29 @@
 package com.omicronlab.avro.test;
 
-import com.omicronlab.avro.phonetic.dict.PhoneticJsonLoader;
-import com.omicronlab.avro.phonetic.dict.PhoneticParser;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+
+import com.omicronlab.avro.phonetic.search.DBSearch;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-	private TextView tvMem, tvTime;
-	private Button butTest, butGc;
+	private TextView tvMem, tvTime, tvResult;
 	private EditText editText1;
 
-	private String[] tempArr;
+	private DBSearch dbsearch;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -28,37 +32,55 @@ public class MainActivity extends Activity {
 
 		tvMem = (TextView) findViewById(R.id.tvMem);
 		tvTime = (TextView) findViewById(R.id.tvTime);
-		butTest = (Button) findViewById(R.id.button1);
-		butGc = (Button) findViewById(R.id.button2);
+		tvResult = (TextView) findViewById(R.id.textResult);
 		editText1 = (EditText) findViewById(R.id.editText1);
 
-		butTest.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				Log.i("Test", PhoneticParser.getInstance().parse("test").regex);
-			}
-		});
+		dbsearch = DBSearch.getInstance();
+		
+		editText1.addTextChangedListener(new TextWatcher() {
+			  
+			    public void afterTextChanged(Editable s) {
+			        //((TextView)findViewById(R.id.numcaratteri)).setText(String.format(getString(R.string.caratteri), s.length()));
+			    	search();
+			    }
+			 
+			    public void beforeTextChanged(CharSequence s, int start, int count,
+			            int after) {
+			        // TODO Auto-generated method stub
+			    }
+			 
+			    public void onTextChanged(CharSequence s, int start, int before,
+			            int count) {
+			        // TODO Auto-generated method stub
+			    }
+			 
+			});
 
-		butGc.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				Runtime.getRuntime().gc();
-				calculateMemory();
-			}
-		});
-		
-		PhoneticParser.getInstance().setLoader(new PhoneticJsonLoader());
-		try {
-			PhoneticParser.getInstance().init();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 		calculateMemory();
 	}
 
 	private void calculateMemory() {
-		tvMem.setText(("Mem used: " + ((Runtime.getRuntime().totalMemory() / (1024 * 1024)) - (Runtime.getRuntime().freeMemory() / (1024 * 1024))) + "/" + (Runtime.getRuntime().totalMemory() / (1024 * 1024)) + " MB"));
+		tvMem.setText(("Mem used: " + ((Runtime.getRuntime().totalMemory() / (1024 * 1024)) - (Runtime.getRuntime().freeMemory() / (1024 * 1024))) + "/"
+				+ (Runtime.getRuntime().totalMemory() / (1024 * 1024)) + " MB"));
+	}
+	
+	private void search(){
+		String en = editText1.getText().toString();
+		
+		if (en.length()<=0){
+			return;
+		}
+		
+		long startTime = System.currentTimeMillis();
+		ArrayList<String> bnl = dbsearch.search(en);
+		long endTime = System.currentTimeMillis();
+		String bn = "";
+		for (String w : bnl) {
+			bn += w + "\n";
+		}
+		tvResult.setText(bn);
+		tvTime.setText("Taken: " + (endTime - startTime) + "ms");
+		calculateMemory();
 	}
 
 	@Override
@@ -66,4 +88,5 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
+
 }

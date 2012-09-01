@@ -38,7 +38,7 @@ import com.omicronlab.avro.phonetic.dict.models.Rule;
 
 public class PhoneticParser {
 
-	private static volatile PhoneticParser instance = null;
+	private static PhoneticParser instance = null;
 	private static PhoneticLoader loader = null;
 	private static List<Pattern> patterns;
 	private static String vowel = "";
