@@ -57,9 +57,7 @@ public class PhoneticParser {
 
 	public static PhoneticParser getInstance() {
 		if (instance == null) {
-			if (instance == null) {
-				instance = new PhoneticParser();
-			}
+			instance = new PhoneticParser();
 		}
 		return instance;
 	}
