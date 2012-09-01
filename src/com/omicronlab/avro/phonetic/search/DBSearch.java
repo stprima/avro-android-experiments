@@ -1,8 +1,7 @@
 package com.omicronlab.avro.phonetic.search;
 
 import java.util.ArrayList;
-
-import jregex.Pattern;
+import java.util.regex.Pattern;
 
 import org.garret.perst.Key;
 import org.garret.perst.Storage;
@@ -54,7 +53,7 @@ public class DBSearch {
 		ArrayList<String> retWords = new ArrayList<String>();
 
 		if (words != null) {
-			 Pattern pattern = new Pattern(regex);
+			 Pattern pattern = Pattern.compile(regex);
 			for (String w : words) {
 				 if (pattern.matcher(w).matches()) {
 				 retWords.add(w);
