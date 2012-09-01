@@ -9,6 +9,7 @@ import org.garret.perst.StorageFactory;
 
 import android.util.Log;
 
+import com.ibm.icu.text.UnicodeSet;
 import com.omicronlab.avro.app.AvroTest;
 import com.omicronlab.avro.phonetic.dict.PhoneticJsonLoader;
 import com.omicronlab.avro.phonetic.dict.PhoneticParser;
@@ -53,10 +54,13 @@ public class DBSearch {
 		ArrayList<String> retWords = new ArrayList<String>();
 
 		if (words != null) {
-			Pattern pattern = Pattern.compile(regex);
-
+			//Pattern pattern = Pattern.compile(regex);
+			UnicodeSet pattern = new UnicodeSet("[" + regex + "]");
 			for (String w : words) {
-				if (pattern.matcher(w).matches()) {
+//				if (pattern.matcher(w).matches()) {
+//					retWords.add(w);
+//				}
+				if (pattern.containsAll(w)){
 					retWords.add(w);
 				}
 			}
@@ -90,7 +94,7 @@ public class DBSearch {
 	}
 
 	private void initDb() {
-		int pagePoolSize = 2 * 1024 * 1024;
+		int pagePoolSize = 20 * 1024 * 1024;
 
 		db = StorageFactory.getInstance().createStorage();
 		String dbpath = AvroTest.getAppContext().getFileStreamPath("test.dbs").getAbsolutePath();
