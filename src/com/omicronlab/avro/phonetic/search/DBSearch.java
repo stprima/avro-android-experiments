@@ -1,7 +1,8 @@
 package com.omicronlab.avro.phonetic.search;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+
+import jregex.Pattern;
 
 import org.garret.perst.Key;
 import org.garret.perst.Storage;
@@ -9,7 +10,6 @@ import org.garret.perst.StorageFactory;
 
 import android.util.Log;
 
-import com.ibm.icu.text.UnicodeSet;
 import com.omicronlab.avro.app.AvroTest;
 import com.omicronlab.avro.phonetic.dict.PhoneticJsonLoader;
 import com.omicronlab.avro.phonetic.dict.PhoneticParser;
@@ -27,12 +27,12 @@ public class DBSearch {
 
 	public ArrayList<String> search(String engT) {
 		long startTime, endTime;
-		
+
 		startTime = System.currentTimeMillis();
 		PhoneticResult pr = regexParser.parse(engT);
 		endTime = System.currentTimeMillis();
-		Log.i("Parser", (endTime-startTime) + "ms");
-		
+		Log.i("Parser", (endTime - startTime) + "ms");
+
 		ArrayList<String> words = null;
 
 		startTime = System.currentTimeMillis();
@@ -41,12 +41,12 @@ public class DBSearch {
 			words = populateWords(objp.words);
 		}
 		endTime = System.currentTimeMillis();
-		Log.i("Perst", (endTime-startTime) + "ms");
+		Log.i("Perst", (endTime - startTime) + "ms");
 
 		startTime = System.currentTimeMillis();
 		ArrayList<String> result = searchRegexInWords(words, pr.regex);
 		endTime = System.currentTimeMillis();
-		Log.i("Regex", (endTime-startTime) + "ms");
+		Log.i("Regex", (endTime - startTime) + "ms");
 		return result;
 	}
 
@@ -54,15 +54,11 @@ public class DBSearch {
 		ArrayList<String> retWords = new ArrayList<String>();
 
 		if (words != null) {
-			//Pattern pattern = Pattern.compile(regex);
-			UnicodeSet pattern = new UnicodeSet("[" + regex + "]");
+			 Pattern pattern = new Pattern(regex);
 			for (String w : words) {
-//				if (pattern.matcher(w).matches()) {
-//					retWords.add(w);
-//				}
-				if (pattern.containsAll(w)){
-					retWords.add(w);
-				}
+				 if (pattern.matcher(w).matches()) {
+				 retWords.add(w);
+				 }
 			}
 		}
 		return retWords;
